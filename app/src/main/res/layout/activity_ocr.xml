@@ -14,25 +14,38 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-    <Spinner
-        android:id="@+id/spinnerCurrencyFrom"
-        android:layout_marginTop="500dp"
-        android:layout_marginLeft="90dp"
-        android:layout_height="50dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fromCurrencyInputLayout"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:textColor="@android:color/white" />
+        android:layout_marginTop="500dp"
+        android:layout_marginLeft="90dp">
 
-    <Spinner
-        android:id="@+id/spinnerCurrencyTo"
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/fromCurrencySpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textColor="@android:color/white"
+            android:hint="From Currency" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/toCurrencyInputLayout"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginTop="500dp"
-        android:layout_marginStart="16dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/spinnerCurrencyFrom"
-        android:textColor="@android:color/white"/>
+        android:layout_marginTop="500dp"
+        android:layout_toEndOf="@id/fromCurrencyInputLayout"
+        android:layout_marginStart="16dp">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/toCurrencySpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textColor="@android:color/white"
+            android:hint="To Currency" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/btnPauseResume"
@@ -63,4 +76,27 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="550dp"
         android:text="Swap" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="2"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/manualButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Fix mode" />
+
+        <Button
+            android:id="@+id/Mainconvert"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Main convert" />
+    </LinearLayout>
 </RelativeLayout>

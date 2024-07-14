@@ -57,5 +57,5 @@ dependencies {
     implementation ("androidx.camera:camera-extensions:1.0.0-alpha23")
     implementation ("com.google.mlkit:text-recognition:16.0.0")
     implementation ("com.google.code.gson:gson:2.8.8")
-
+    implementation ("com.google.android.material:material:1.4.0")
 }

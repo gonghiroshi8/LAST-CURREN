@@ -1,5 +1,6 @@
 package com.example.currencyconvert
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,9 +9,10 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
@@ -25,12 +27,13 @@ class MainActivity : AppCompatActivity() {
     private val KEY_EXCHANGE_RATES = "exchange_rates"
     private val KEY_LAST_UPDATED = "last_updated"
     private lateinit var amountEditText: EditText
-    private lateinit var fromCurrencySpinner: Spinner
-    private lateinit var toCurrencySpinner: Spinner
+    private lateinit var fromCurrencySpinner: MaterialAutoCompleteTextView
+    private lateinit var toCurrencySpinner: MaterialAutoCompleteTextView
     private lateinit var convertButton: Button
     private lateinit var ocrButton: Button
     private lateinit var resultTextView: TextView
     private lateinit var swapButton: Button
+    private lateinit var manualButton: Button
 
     private val api: ExchangeRateApi by lazy {
         Retrofit.Builder()
@@ -40,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             .create(ExchangeRateApi::class.java)
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -53,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         ocrButton = findViewById(R.id.ocrButton)
         resultTextView = findViewById(R.id.resultTextView)
         swapButton = findViewById(R.id.swapButton)
+        manualButton = findViewById(R.id.manualButton)
 
         fetchAndSetupCurrencies()
 
@@ -62,6 +67,11 @@ class MainActivity : AppCompatActivity() {
 
         ocrButton.setOnClickListener {
             val intent = Intent(this, OcrActivity::class.java)
+            startActivity(intent)
+        }
+
+        manualButton.setOnClickListener {
+            val intent = Intent(this, ManualActivity::class.java)
             startActivity(intent)
         }
 
@@ -80,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             setupCurrencySpinners(cachedCurrencies.toList())
         } else {
             Log.d("MainActivity", "Fetching currencies from API")
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch {
                 try {
                     val response = withContext(Dispatchers.IO) {
                         api.getSupportedCurrencies("USD").awaitResponse()
@@ -134,10 +144,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupCurrencySpinners(currencies: List<String>) {
         val sortedCurrencies = currencies.sorted()
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortedCurrencies)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        fromCurrencySpinner.adapter = adapter
-        toCurrencySpinner.adapter = adapter
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, sortedCurrencies)
+        fromCurrencySpinner.setAdapter(adapter)
+        toCurrencySpinner.setAdapter(adapter)
+        fromCurrencySpinner.threshold = 1 // Minimum characters to start the filtering process
+        toCurrencySpinner.threshold = 1 // Minimum characters to start the filtering process
     }
 
     private fun convertCurrency() {
@@ -149,10 +160,10 @@ class MainActivity : AppCompatActivity() {
 
         try {
             val amount = amountString.toDouble()
-            val fromCurrency = fromCurrencySpinner.selectedItem?.toString()
-            val toCurrency = toCurrencySpinner.selectedItem?.toString()
+            val fromCurrency = fromCurrencySpinner.text.toString()
+            val toCurrency = toCurrencySpinner.text.toString()
 
-            if (fromCurrency == null || toCurrency == null) {
+            if (fromCurrency.isEmpty() || toCurrency.isEmpty()) {
                 resultTextView.text = "Please select both currencies"
                 return
             }
@@ -178,7 +189,7 @@ class MainActivity : AppCompatActivity() {
             updateExchangeRateUI(rate, currencyFrom, currencyTo, amount)
         } else {
             Log.d("CurrencyAPI", "Fetching exchange rates from API")
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch {
                 try {
                     val response = withContext(Dispatchers.IO) {
                         api.getSupportedCurrencies(currencyFrom).awaitResponse()
@@ -206,12 +217,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     private fun swapCurrencies() {
-        val fromPosition = fromCurrencySpinner.selectedItemPosition
-        val toPosition = toCurrencySpinner.selectedItemPosition
-        fromCurrencySpinner.setSelection(toPosition)
-        toCurrencySpinner.setSelection(fromPosition)
+        val fromText = fromCurrencySpinner.text.toString()
+        val toText = toCurrencySpinner.text.toString()
+        fromCurrencySpinner.setText(toText, false)
+        toCurrencySpinner.setText(fromText, false)
     }
 }
+

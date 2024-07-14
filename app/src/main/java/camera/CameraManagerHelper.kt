@@ -20,15 +20,18 @@ class FocusOverlayView @JvmOverloads constructor(
     private val clearPaint = Paint().apply {
         xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
     }
-
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         // กำหนดความสูง
         val width = width
         val height = height
-        val rectHeight = height / 4f
+        val rectHeight = height / 7f
         val top = (height - rectHeight) / 2f
         val bottom = top + rectHeight
+
+        // กำหนดขอบซ้ายและขวาของพื้นที่โฟกัส
+        val leftMargin = width * 0.1f // 10% ของความกว้าง
+        val rightMargin = width * 0.1f // 10% ของความกว้าง
 
         // สร้างเลเยอร์ใหม่สำหรับการวาด
         val saveCount = canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null)
@@ -37,7 +40,7 @@ class FocusOverlayView @JvmOverloads constructor(
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), backgroundPaint)
 
         // ลบพื้นที่โฟกัสออกจากพื้นหลังสีดำ
-        canvas.drawRect(0f, top, width.toFloat(), bottom, clearPaint)
+        canvas.drawRect(leftMargin, top, width - rightMargin, bottom, clearPaint)
 
         // คืนค่าเลเยอร์
         canvas.restoreToCount(saveCount)

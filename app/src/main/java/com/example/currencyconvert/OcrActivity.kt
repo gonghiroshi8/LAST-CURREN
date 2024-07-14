@@ -1,7 +1,10 @@
 package com.example.currencyconvert
 
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import android.widget.ArrayAdapter
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Rect
@@ -9,7 +12,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
@@ -44,12 +46,15 @@ class OcrActivity : AppCompatActivity() {
     private lateinit var spinnerCurrencyTo: Spinner
     private lateinit var btnPauseResume: Button
     private lateinit var btnSwap: Button
+    private lateinit var manualButton: Button
+    private lateinit var Mainconvert: Button
     private var isPaused = false
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var focusOverlayView: FocusOverlayView
     private var imageAnalysis: ImageAnalysis? = null
     private var ocrNumber: Double = 0.0
-
+    private lateinit var fromCurrencySpinner: MaterialAutoCompleteTextView
+    private lateinit var toCurrencySpinner: MaterialAutoCompleteTextView
     private var selectedCurrencyFrom: String = "USD"
     private var selectedCurrencyTo: String = "USD"
     private val KEY_EXCHANGE_RATES = "exchange_rates"
@@ -73,33 +78,40 @@ class OcrActivity : AppCompatActivity() {
         setContentView(R.layout.activity_ocr)
 
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-
+        fromCurrencySpinner = findViewById(R.id.fromCurrencySpinner)
+        toCurrencySpinner = findViewById(R.id.toCurrencySpinner)
         textureView = findViewById(R.id.textureView)
         ocrResult = findViewById(R.id.ocrResult)
-        spinnerCurrencyFrom = findViewById(R.id.spinnerCurrencyFrom)
-        spinnerCurrencyTo = findViewById(R.id.spinnerCurrencyTo)
+
         focusOverlayView = findViewById(R.id.focusOverlay)
         btnPauseResume = findViewById(R.id.btnPauseResume)
         btnSwap = findViewById(R.id.btnSwap)
-
+        manualButton = findViewById(R.id.manualButton)
+        Mainconvert = findViewById(R.id.Mainconvert)
         fetchAndSetupCurrencies()
 
-        spinnerCurrencyFrom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedCurrencyFrom = parent.getItemAtPosition(position).toString()
-                fetchExchangeRates(selectedCurrencyFrom, selectedCurrencyTo)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
+        manualButton.setOnClickListener {
+            val intent = Intent(this, ManualActivity::class.java)
+            startActivity(intent)
+        }
+        Mainconvert.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+        btnSwap.setOnClickListener {
+            swapCurrencies()
         }
 
-        spinnerCurrencyTo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedCurrencyTo = parent.getItemAtPosition(position).toString()
-                fetchExchangeRates(selectedCurrencyFrom, selectedCurrencyTo)
-            }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {}
+
+        fromCurrencySpinner.setOnItemClickListener { _, _, position, _ ->
+            selectedCurrencyFrom = fromCurrencySpinner.adapter.getItem(position) as String
+            fetchExchangeRates(selectedCurrencyFrom, selectedCurrencyTo)
+        }
+
+        toCurrencySpinner.setOnItemClickListener { _, _, position, _ ->
+            selectedCurrencyTo = toCurrencySpinner.adapter.getItem(position) as String
+            fetchExchangeRates(selectedCurrencyFrom, selectedCurrencyTo)
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -180,12 +192,20 @@ class OcrActivity : AppCompatActivity() {
                 .addOnSuccessListener { visionText ->
                     val bitmap = imageProxy.toBitmap()
 
-                    // กำหนดพื้นที่ของ bitmap ที่จะเน้น
+                    // กำหนดพื้นที่ของ bitmap ที่จะเน้นให้ตรงกับการคำนวณใน onDraw
+                    val rectHeight = bitmap.height / 7f
+                    val top = (bitmap.height - rectHeight) / 2f + (bitmap.height * 0.17f)
+                    val bottom = top + rectHeight
+
+                    // กำหนดขอบซ้ายและขอบขวาของพื้นที่โฟกัสให้ตรงกับ onDraw
+                    val leftMargin = bitmap.width * 0.22f
+                    val rightMargin = bitmap.width * 0.457f
+
                     val focusArea = Rect(
-                        (bitmap.width * 0.1f).toInt(),
-                        ((bitmap.height - (bitmap.height / 4f)) * 2 / 3f).toInt(),
-                        (bitmap.width * 0.9f).toInt(),
-                        (((bitmap.height - (bitmap.height / 4f)) * 2 / 3f) + (bitmap.height / 4f) + (bitmap.height * 0.1f)).toInt()
+                        leftMargin.toInt(),
+                        top.toInt(),
+                        (bitmap.width - rightMargin).toInt(),
+                        bottom.toInt()
                     )
 
                     // กรองข้อความในพื้นที่เน้นและดึงเฉพาะตัวเลข
@@ -217,9 +237,16 @@ class OcrActivity : AppCompatActivity() {
     }
 
 
+    private fun setupCurrencyAdapters(currencies: List<String>) {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, currencies)
+        fromCurrencySpinner.setAdapter(adapter)
+        toCurrencySpinner.setAdapter(adapter)
 
-
-
+        fromCurrencySpinner.setText("", false)
+        toCurrencySpinner.setText("", false)
+        fromCurrencySpinner.threshold = 1 // Minimum characters to start the filtering process
+        toCurrencySpinner.threshold = 1 // Minimum characters to start the filtering process
+    }
 
     private fun filterTextInFocusArea(
         visionText: com.google.mlkit.vision.text.Text,
@@ -284,7 +311,7 @@ class OcrActivity : AppCompatActivity() {
 
         if (cachedCurrencies != null && currentTime - lastUpdated < 24 * 60 * 60 * 1000) {
             Log.d("OcrActivity", "ใช้ข้อมูลในแคช")
-            setupCurrencySpinners(cachedCurrencies.map { it to 1.0 }.toMap())
+            setupCurrencyAdapters(cachedCurrencies.toList())
 
         } else {
             Log.d("OcrActivity", "ดึงค่าเงินจาก WEB")
@@ -298,7 +325,7 @@ class OcrActivity : AppCompatActivity() {
                         val supportedCurrencies = response.body()?.conversion_rates
                         if (supportedCurrencies != null) {
                             saveSupportedCurrenciesToCache(supportedCurrencies.keys)
-                            setupCurrencySpinners(supportedCurrencies)
+                            setupCurrencyAdapters(supportedCurrencies.keys.toList())
                         } else {
                             ocrResult.text = "Failed to load currencies"
                         }
@@ -392,11 +419,14 @@ class OcrActivity : AppCompatActivity() {
         selectedCurrencyFrom = selectedCurrencyTo
         selectedCurrencyTo = tempCurrencyFrom
 
-        spinnerCurrencyFrom.setSelection((spinnerCurrencyFrom.adapter as ArrayAdapter<String>).getPosition(selectedCurrencyFrom))
-        spinnerCurrencyTo.setSelection((spinnerCurrencyTo.adapter as ArrayAdapter<String>).getPosition(selectedCurrencyTo))
+        // Update the spinners' selected items
+        fromCurrencySpinner.setText(selectedCurrencyFrom, false)
+        toCurrencySpinner.setText(selectedCurrencyTo, false)
 
+        // Fetch the new exchange rates
         fetchExchangeRates(selectedCurrencyFrom, selectedCurrencyTo)
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
