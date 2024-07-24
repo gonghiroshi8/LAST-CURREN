@@ -1,23 +1,36 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
-    <EditText
-        android:id="@+id/amountEditText"
-        android:layout_width="match_parent"
+    <!-- Header Text -->
+    <TextView
+        android:id="@+id/headerText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter amount"
-        android:inputType="numberDecimal"
-        android:layout_marginBottom="16dp" />
+        android:text="Main convert"
+        android:textSize="35sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentTop="true" />
+
+    <!-- Form Currency Label -->
+    <TextView
+        android:id="@+id/formCurrencyLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Form currency"
+        android:textSize="16sp"
+        android:layout_below="@id/headerText"
+        android:layout_marginBottom="8dp" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fromCurrencyLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="From Currency">
+        android:layout_below="@id/formCurrencyLabel">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/fromCurrencySpinner"
@@ -25,11 +38,22 @@
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- To Currency Label -->
+    <TextView
+        android:id="@+id/toCurrencyLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To currency"
+        android:textSize="16sp"
+        android:layout_below="@id/fromCurrencyLayout"
+        android:layout_marginBottom="8dp" />
+
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/toCurrencyLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="To Currency">
+        android:layout_below="@id/toCurrencyLabel">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/toCurrencySpinner"
@@ -37,21 +61,34 @@
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/convertButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Convert"
-        android:layout_marginBottom="16dp"
-        android:layout_gravity="center" />
-
+    <!-- Swap Button -->
     <Button
         android:id="@+id/swapButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Swap"
         android:layout_marginBottom="16dp"
-        android:layout_gravity="center" />
+        android:layout_below="@id/toCurrencyLayout"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Enter Amount Label -->
+    <TextView
+        android:id="@+id/enterAmountLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter amount"
+        android:textSize="16sp"
+        android:layout_below="@id/swapButton"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/amountEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter amount"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="16dp"
+        android:layout_below="@id/enterAmountLabel" />
 
     <TextView
         android:id="@+id/resultTextView"
@@ -60,15 +97,26 @@
         android:text="Result will be shown here"
         android:textSize="18sp"
         android:layout_marginBottom="16dp"
-        android:layout_gravity="center" />
+        android:layout_below="@id/amountEditText"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/convertButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Convert"
+        android:layout_marginBottom="16dp"
+        android:layout_below="@id/resultTextView"
+        android:layout_centerHorizontal="true" />
 
     <LinearLayout
+        android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
         android:weightSum="2"
-        android:layout_marginBottom="16dp">
+        android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/manualButton"
@@ -82,6 +130,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="OCR SCAN" />
+            android:text="OCR scan" />
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

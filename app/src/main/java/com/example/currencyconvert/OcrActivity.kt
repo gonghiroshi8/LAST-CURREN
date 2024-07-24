@@ -10,8 +10,6 @@ import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
 import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
@@ -38,7 +36,7 @@ import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-
+import java.text.DecimalFormat
 class OcrActivity : AppCompatActivity() {
     private lateinit var textureView: PreviewView
     private lateinit var ocrResult: TextView
@@ -48,6 +46,7 @@ class OcrActivity : AppCompatActivity() {
     private lateinit var btnSwap: Button
     private lateinit var manualButton: Button
     private lateinit var Mainconvert: Button
+
     private var isPaused = false
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var focusOverlayView: FocusOverlayView
@@ -82,7 +81,6 @@ class OcrActivity : AppCompatActivity() {
         toCurrencySpinner = findViewById(R.id.toCurrencySpinner)
         textureView = findViewById(R.id.textureView)
         ocrResult = findViewById(R.id.ocrResult)
-
         focusOverlayView = findViewById(R.id.focusOverlay)
         btnPauseResume = findViewById(R.id.btnPauseResume)
         btnSwap = findViewById(R.id.btnSwap)
@@ -241,11 +239,10 @@ class OcrActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, currencies)
         fromCurrencySpinner.setAdapter(adapter)
         toCurrencySpinner.setAdapter(adapter)
-
         fromCurrencySpinner.setText("", false)
         toCurrencySpinner.setText("", false)
-        fromCurrencySpinner.threshold = 1 // Minimum characters to start the filtering process
-        toCurrencySpinner.threshold = 1 // Minimum characters to start the filtering process
+        fromCurrencySpinner.threshold = 0 // Minimum characters to start the filtering process
+        toCurrencySpinner.threshold = 0 // Minimum characters to start the filtering process
     }
 
     private fun filterTextInFocusArea(
@@ -282,7 +279,7 @@ class OcrActivity : AppCompatActivity() {
             // ลบอักขระที่ไม่ใช่ตัวเลขและจุดทศนิยมออก
             val cleanedWord = word.replace(Regex("[^0-9.]"), "")
             // ตรวจสอบว่าคำที่ถูกลบอักขระแล้วเป็นตัวเลขที่ถูกต้องหรือไม่
-            if (cleanedWord.matches(Regex("^\\d+(\\.\\d+)?$")) && cleanedWord.length <= 6 && !cleanedWord.matches(Regex("\\d{1,2}/\\d{1,2}/\\d{2,4}"))) {
+            if (cleanedWord.matches(Regex("^\\d+(\\.\\d+)?$")) && cleanedWord.length <= 8 && !cleanedWord.matches(Regex("\\d{1,2}/\\d{1,2}/\\d{2,4}"))) {
                 result.add(cleanedWord)
             }
         }
@@ -347,8 +344,13 @@ class OcrActivity : AppCompatActivity() {
 
     private fun updateExchangeRateUI(rate: Double, currencyFrom: String, currencyTo: String) {
         val convertedAmount = ocrNumber * rate
+        val decimalFormat = DecimalFormat("#,###.##")
+
+        val formattedOcrNumber = decimalFormat.format(ocrNumber)
+        val formattedConvertedAmount = decimalFormat.format(convertedAmount)
+
         runOnUiThread {
-            ocrResult.text = "$ocrNumber $currencyFrom = ${String.format("%.2f", convertedAmount)} $currencyTo"
+            ocrResult.text = "$formattedOcrNumber $currencyFrom = $formattedConvertedAmount $currencyTo"
         }
     }
     private fun saveExchangeRatesToCache(rates: Map<String, Double>) {

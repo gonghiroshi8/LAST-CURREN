@@ -1,114 +1,125 @@
-<!-- mannual.xml -->
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <EditText
-        android:id="@+id/editTextCurrencyFrom"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Enter amount"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteCurrencyTo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Enter or select currency"
-        app:layout_constraintTop_toBottomOf="@id/editTextCurrencyFrom"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <EditText
-        android:id="@+id/editTextRateTo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Enter rate"
-        app:layout_constraintTop_toBottomOf="@id/autoCompleteCurrencyTo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <Button
-        android:id="@+id/buttonSaveRateTo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Save Rate"
-        app:layout_constraintTop_toBottomOf="@id/editTextRateTo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <Spinner
-        android:id="@+id/spinnerSavedCurrencies"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/buttonSaveRateTo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <Button
-        android:id="@+id/buttonDeleteRateTo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Delete Rate"
-        app:layout_constraintTop_toBottomOf="@id/spinnerSavedCurrencies"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <Button
-        android:id="@+id/buttonConvert"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Convert"
-        app:layout_constraintTop_toBottomOf="@id/buttonDeleteRateTo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
-
+    <!-- Header Text -->
     <TextView
-        android:id="@+id/textViewResult"
-        android:layout_width="0dp"
+        android:id="@+id/headerText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
-        app:layout_constraintTop_toBottomOf="@id/buttonConvert"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
+        android:text="Fix mode"
+        android:textSize="35sp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Main Content Layout -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- To Currency Label -->
+        <TextView
+            android:id="@+id/labelToCurrency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Input or select currency"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteCurrencyTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Rate Label -->
+        <TextView
+            android:id="@+id/labelRateTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter rate"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/editTextRateTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Saved Currencies Label -->
+        <TextView
+            android:id="@+id/labelSavedCurrencies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Saved Currencies"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerSavedCurrencies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/buttonSaveRateTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Rate"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/buttonDeleteRateTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Rate"
+            android:layout_marginBottom="16dp" />
+
+        <!-- From Currency Label -->
+        <TextView
+            android:id="@+id/labelFromCurrency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter amount"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/editTextCurrencyFrom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/buttonConvert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Convert"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/textViewResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginBottom="16dp" />
+    </LinearLayout>
+
+    <!-- Bottom Buttons Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
         android:weightSum="2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp">
 
         <Button
@@ -123,6 +134,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="OCR SCAN" />
+            android:text="OCR scan" />
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

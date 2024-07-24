@@ -8,6 +8,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.text.NumberFormat
 
 class ManualActivity : AppCompatActivity() {
 
@@ -56,11 +57,13 @@ class ManualActivity : AppCompatActivity() {
 
             if (amountFrom != null && rateTo != null) {
                 val result = amountFrom * rateTo
-                textViewResult.text = "Converted amount to $currencyTo: $result"
+                val formattedResult = NumberFormat.getInstance().format(result)
+                textViewResult.text = "Converted amount to $currencyTo: $formattedResult"
             } else {
                 textViewResult.text = "Please enter valid numbers"
             }
         }
+
 
         buttonSaveRateTo.setOnClickListener {
             val rateTo = editTextRateTo.text.toString().toFloatOrNull()
@@ -76,10 +79,15 @@ class ManualActivity : AppCompatActivity() {
         }
 
         buttonDeleteRateTo.setOnClickListener {
-            val currencyTo = spinnerSavedCurrencies.selectedItem.toString()
-            deleteCurrencyRate(currencyTo)
-            loadSavedCurrencies()
-            Toast.makeText(this, "Rate and currency deleted", Toast.LENGTH_SHORT).show()
+            val selectedItemPosition = spinnerSavedCurrencies.selectedItemPosition
+            if (selectedItemPosition >= 0) {
+                val currencyTo = spinnerSavedCurrencies.selectedItem.toString()
+                deleteCurrencyRate(currencyTo)
+                loadSavedCurrencies()
+                Toast.makeText(this, "Rate and currency deleted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "No currency to delete", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // Set onClickListeners for ocrButton and manualButton

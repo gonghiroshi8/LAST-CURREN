@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId = "com.example.currencyconvert"
-        minSdk = 30
+        minSdk = 28
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -48,8 +48,6 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("org.tensorflow:tensorflow-lite:2.4.0")
-    implementation("org.tensorflow:tensorflow-lite-gpu:2.4.0")
     implementation("androidx.camera:camera-core:1.3.4")
     implementation("androidx.camera:camera-camera2:1.3.4")
     implementation("androidx.camera:camera-lifecycle:1.3.4")
@@ -58,4 +56,6 @@ dependencies {
     implementation ("com.google.mlkit:text-recognition:16.0.0")
     implementation ("com.google.code.gson:gson:2.8.8")
     implementation ("com.google.android.material:material:1.4.0")
+    implementation ("androidx.constraintlayout:constraintlayout:2.0.4")
+
 }
