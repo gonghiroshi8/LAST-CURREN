@@ -16,102 +16,107 @@
         android:layout_gravity="center"
         android:layout_marginBottom="16dp" />
 
-    <!-- Main Content Layout -->
-    <LinearLayout
+    <!-- ScrollView to enable scrolling -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
-        <!-- To Currency Label -->
-        <TextView
-            android:id="@+id/labelToCurrency"
+        <!-- Main Content Layout -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Input or select currency"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
+            android:orientation="vertical">
 
-        <AutoCompleteTextView
-            android:id="@+id/autoCompleteCurrencyTo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            <!-- To Currency Label -->
+            <TextView
+                android:id="@+id/labelToCurrency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Input or select currency"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp" />
 
-        <!-- Rate Label -->
-        <TextView
-            android:id="@+id/labelRateTo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enter rate"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteCurrencyTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
-        <EditText
-            android:id="@+id/editTextRateTo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            <!-- Rate Label -->
+            <TextView
+                android:id="@+id/labelRateTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter rate"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp" />
 
-        <!-- Saved Currencies Label -->
-        <TextView
-            android:id="@+id/labelSavedCurrencies"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Saved Currencies"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
+            <EditText
+                android:id="@+id/editTextRateTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
-        <Spinner
-            android:id="@+id/spinnerSavedCurrencies"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            <!-- Saved Currencies Label -->
+            <TextView
+                android:id="@+id/labelSavedCurrencies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Saved Currencies"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp" />
 
-        <Button
-            android:id="@+id/buttonSaveRateTo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save Rate"
-            android:layout_marginBottom="16dp" />
+            <Spinner
+                android:id="@+id/spinnerSavedCurrencies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
-        <Button
-            android:id="@+id/buttonDeleteRateTo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Delete Rate"
-            android:layout_marginBottom="16dp" />
+            <Button
+                android:id="@+id/buttonSaveRateTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Rate"
+                android:layout_marginBottom="16dp" />
 
-        <!-- From Currency Label -->
-        <TextView
-            android:id="@+id/labelFromCurrency"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enter amount"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
+            <Button
+                android:id="@+id/buttonDeleteRateTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete Rate"
+                android:layout_marginBottom="16dp" />
 
-        <EditText
-            android:id="@+id/editTextCurrencyFrom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            <!-- From Currency Label -->
+            <TextView
+                android:id="@+id/labelFromCurrency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter amount"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp" />
 
-            android:layout_marginBottom="16dp" />
+            <EditText
+                android:id="@+id/editTextCurrencyFrom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
-        <Button
-            android:id="@+id/buttonConvert"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Convert"
-            android:layout_marginBottom="16dp" />
+            <Button
+                android:id="@+id/buttonConvert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Convert"
+                android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:id="@+id/textViewResult"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:layout_marginBottom="16dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textViewResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+    </ScrollView>
 
     <!-- Bottom Buttons Layout -->
     <LinearLayout

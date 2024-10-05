@@ -26,6 +26,11 @@ class MainActivity : AppCompatActivity() {
     private val KEY_CURRENCIES = "currencies"
     private val KEY_EXCHANGE_RATES = "exchange_rates"
     private val KEY_LAST_UPDATED = "last_updated"
+
+    private val KEY_LAST_AMOUNT = "last_amount"
+    private val KEY_LAST_FROM_CURRENCY = "last_from_currency"
+    private val KEY_LAST_TO_CURRENCY = "last_to_currency"
+
     private lateinit var amountEditText: EditText
     private lateinit var fromCurrencySpinner: MaterialAutoCompleteTextView
     private lateinit var toCurrencySpinner: MaterialAutoCompleteTextView
@@ -60,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         manualButton = findViewById(R.id.manualButton)
 
         fetchAndSetupCurrencies()
+
+        // Load last state
+        loadLastState()
 
         convertButton.setOnClickListener {
             convertCurrency()
@@ -147,8 +155,8 @@ class MainActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, sortedCurrencies)
         fromCurrencySpinner.setAdapter(adapter)
         toCurrencySpinner.setAdapter(adapter)
-        fromCurrencySpinner.threshold = 1 // Minimum characters to start the filtering process
-        toCurrencySpinner.threshold = 1 // Minimum characters to start the filtering process
+        fromCurrencySpinner.threshold = 1
+        toCurrencySpinner.threshold = 1
     }
 
     private fun convertCurrency() {
@@ -169,6 +177,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             fetchExchangeRates(fromCurrency, toCurrency, amount)
+            // Save the last state
+            saveLastState(amount, fromCurrency, toCurrency)
         } catch (e: NumberFormatException) {
             resultTextView.text = "Invalid amount"
         }
@@ -217,6 +227,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun saveLastState(amount: Double, fromCurrency: String, toCurrency: String) {
+        val editor = sharedPreferences.edit()
+        editor.putString(KEY_LAST_AMOUNT, amount.toString())
+        editor.putString(KEY_LAST_FROM_CURRENCY, fromCurrency)
+        editor.putString(KEY_LAST_TO_CURRENCY, toCurrency)
+        editor.apply()
+    }
+
+    private fun loadLastState() {
+        val lastAmount = sharedPreferences.getString(KEY_LAST_AMOUNT, "")
+        val lastFromCurrency = sharedPreferences.getString(KEY_LAST_FROM_CURRENCY, "")
+        val lastToCurrency = sharedPreferences.getString(KEY_LAST_TO_CURRENCY, "")
+
+        amountEditText.setText(lastAmount)
+        fromCurrencySpinner.setText(lastFromCurrency, false)
+        toCurrencySpinner.setText(lastToCurrency, false)
+    }
+
     private fun swapCurrencies() {
         val fromText = fromCurrencySpinner.text.toString()
         val toText = toCurrencySpinner.text.toString()
@@ -224,4 +252,3 @@ class MainActivity : AppCompatActivity() {
         toCurrencySpinner.setText(fromText, false)
     }
 }
-

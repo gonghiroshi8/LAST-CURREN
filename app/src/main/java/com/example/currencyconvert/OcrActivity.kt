@@ -87,7 +87,7 @@ class OcrActivity : AppCompatActivity() {
         manualButton = findViewById(R.id.manualButton)
         Mainconvert = findViewById(R.id.Mainconvert)
         fetchAndSetupCurrencies()
-
+        loadSelectedCurrenciesFromPrefs()
         manualButton.setOnClickListener {
             val intent = Intent(this, ManualActivity::class.java)
             startActivity(intent)
@@ -105,11 +105,13 @@ class OcrActivity : AppCompatActivity() {
         fromCurrencySpinner.setOnItemClickListener { _, _, position, _ ->
             selectedCurrencyFrom = fromCurrencySpinner.adapter.getItem(position) as String
             fetchExchangeRates(selectedCurrencyFrom, selectedCurrencyTo)
+            saveSelectedCurrenciesToPrefs()
         }
 
         toCurrencySpinner.setOnItemClickListener { _, _, position, _ ->
             selectedCurrencyTo = toCurrencySpinner.adapter.getItem(position) as String
             fetchExchangeRates(selectedCurrencyFrom, selectedCurrencyTo)
+            saveSelectedCurrenciesToPrefs()
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -279,7 +281,7 @@ class OcrActivity : AppCompatActivity() {
             // ลบอักขระที่ไม่ใช่ตัวเลขและจุดทศนิยมออก
             val cleanedWord = word.replace(Regex("[^0-9.]"), "")
             // ตรวจสอบว่าคำที่ถูกลบอักขระแล้วเป็นตัวเลขที่ถูกต้องหรือไม่
-            if (cleanedWord.matches(Regex("^\\d+(\\.\\d+)?$")) && cleanedWord.length <= 8 && !cleanedWord.matches(Regex("\\d{1,2}/\\d{1,2}/\\d{2,4}"))) {
+            if (cleanedWord.matches(Regex("^\\d+(\\.\\d+)?$")) && cleanedWord.length <= 6 && !cleanedWord.matches(Regex("\\d{1,2}/\\d{1,2}/\\d{2,4}"))) {
                 result.add(cleanedWord)
             }
         }
@@ -427,9 +429,24 @@ class OcrActivity : AppCompatActivity() {
 
         // Fetch the new exchange rates
         fetchExchangeRates(selectedCurrencyFrom, selectedCurrencyTo)
+
+        // Save the swapped currencies to preferences
+        saveSelectedCurrenciesToPrefs()
     }
 
+    private fun saveSelectedCurrenciesToPrefs() {
+        val editor = sharedPreferences.edit()
+        editor.putString("selectedCurrencyFrom", selectedCurrencyFrom)
+        editor.putString("selectedCurrencyTo", selectedCurrencyTo)
+        editor.apply()
+    }
+    private fun loadSelectedCurrenciesFromPrefs() {
+        selectedCurrencyFrom = sharedPreferences.getString("selectedCurrencyFrom", "USD") ?: "USD"
+        selectedCurrencyTo = sharedPreferences.getString("selectedCurrencyTo", "USD") ?: "USD"
 
+        fromCurrencySpinner.setText(selectedCurrencyFrom, false)
+        toCurrencySpinner.setText(selectedCurrencyTo, false)
+    }
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
