@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private val KEY_LAST_AMOUNT = "last_amount"
     private val KEY_LAST_FROM_CURRENCY = "last_from_currency"
     private val KEY_LAST_TO_CURRENCY = "last_to_currency"
-
+    private lateinit var openWebButton: Button
     private lateinit var amountEditText: EditText
     private lateinit var fromCurrencySpinner: MaterialAutoCompleteTextView
     private lateinit var toCurrencySpinner: MaterialAutoCompleteTextView
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         resultTextView = findViewById(R.id.resultTextView)
         swapButton = findViewById(R.id.swapButton)
         manualButton = findViewById(R.id.manualButton)
-
+        openWebButton = findViewById(R.id.openWebButton)
         fetchAndSetupCurrencies()
 
         // Load last state
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
 
         convertButton.setOnClickListener {
             convertCurrency()
+            fetchAndSetupCurrencies()
         }
 
         ocrButton.setOnClickListener {
@@ -86,6 +88,13 @@ class MainActivity : AppCompatActivity() {
         swapButton.setOnClickListener {
             swapCurrencies()
         }
+        // ตั้งค่า OnClickListener สำหรับปุ่มใหม่
+        openWebButton.setOnClickListener {
+            val url = "https://www.bot.or.th/en/statistics/exchange-rate.html"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)  // เปิดเบราว์เซอร์
+        }
     }
 
     private fun fetchAndSetupCurrencies() {
@@ -93,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         val lastUpdated = sharedPreferences.getLong(KEY_LAST_UPDATED, 0)
         val currentTime = System.currentTimeMillis()
 
-        if (cachedCurrencies != null && currentTime - lastUpdated < 24 * 60 * 60 * 1000) {
+        if (cachedCurrencies != null && currentTime - lastUpdated < 15 * 60 * 1000) {
             Log.d("MainActivity", "Using cached currencies")
             setupCurrencySpinners(cachedCurrencies.toList())
         } else {
@@ -138,9 +147,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateExchangeRateUI(rate: Double, currencyFrom: String, currencyTo: String, amount: Double) {
         val convertedAmount = amount * rate
+        val rateForOneUnit = rate // อัตราแลกเปลี่ยนสำหรับ 1 หน่วย
+
         runOnUiThread {
             resultTextView.text =
-                String.format("%,.2f %s = %,.2f %s", amount, currencyFrom, convertedAmount, currencyTo)
+                String.format("%,.6f %s = %,.6f %s", amount, currencyFrom, convertedAmount, currencyTo) +
+                        "\n1 %s = %,.6f %s".format(currencyFrom, rateForOneUnit, currencyTo)
         }
     }
 

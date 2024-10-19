@@ -18,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="OCR scan"
-        android:textSize="35sp"
+        android:text="Currency convert by OCR"
+        android:textSize="30sp"
         android:textColor="@android:color/white" />
 
     <LinearLayout
@@ -119,6 +119,25 @@
         android:text="OCR Result"
         android:textSize="20sp"
         android:textColor="@android:color/white" />
+    <TextView
+        android:id="@+id/exchangeRatePerUnit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rate"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/ocrResult"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white" />
+    <Button
+        android:id="@+id/openWebButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Don't know the currency abbreviation?"
+        android:layout_below="@id/exchangeRatePerUnit"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        />
 
     <LinearLayout
         android:id="@+id/buttonLayout"
@@ -135,14 +154,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Fix mode" />
+            android:text="Currency convert by fix rates" />
 
         <Button
             android:id="@+id/Mainconvert"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Main convert" />
+            android:text="Currency convert by value" />
     </LinearLayout>
 
 </RelativeLayout>

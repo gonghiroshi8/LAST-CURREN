@@ -9,8 +9,8 @@
         android:id="@+id/headerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Main convert"
-        android:textSize="35sp"
+        android:text="Currency convert by value"
+        android:textSize="30sp"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:layout_alignParentTop="true" />
@@ -109,6 +109,16 @@
         android:layout_below="@id/resultTextView"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:id="@+id/openWebButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Don't know the currency abbreviation?"
+        android:layout_below="@+id/convertButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        />
+
     <LinearLayout
         android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
@@ -118,18 +128,19 @@
         android:weightSum="2"
         android:layout_alignParentBottom="true">
 
+
         <Button
             android:id="@+id/manualButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Fix mode" />
+            android:text="Currency convert by fix rates" />
 
         <Button
             android:id="@+id/ocrButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="OCR scan" />
+            android:text="Currency convert by OCR" />
     </LinearLayout>
 </RelativeLayout>

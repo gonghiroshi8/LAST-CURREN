@@ -11,8 +11,8 @@
         android:id="@+id/headerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fix mode"
-        android:textSize="35sp"
+        android:text="Currency convert by fix rates"
+        android:textSize="28sp"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp" />
 
@@ -132,13 +132,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Main convert" />
+            android:text="Currency convert by value" />
 
         <Button
             android:id="@+id/ocrButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="OCR scan" />
+            android:text="Currency convert by OCR" />
     </LinearLayout>
 </LinearLayout>

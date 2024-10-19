@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -46,7 +47,7 @@ class OcrActivity : AppCompatActivity() {
     private lateinit var btnSwap: Button
     private lateinit var manualButton: Button
     private lateinit var Mainconvert: Button
-
+    private lateinit var openWebButton: Button
     private var isPaused = false
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var focusOverlayView: FocusOverlayView
@@ -61,6 +62,7 @@ class OcrActivity : AppCompatActivity() {
     private val PREFS_NAME = "currency_prefs"
     private val KEY_CURRENCIES = "currencies"
     private val KEY_LAST_UPDATED = "last_updated"
+    private lateinit var exchangeRatePerUnit: TextView
 
     private val api: ExchangeRateApi by lazy {
         Retrofit.Builder()
@@ -75,7 +77,8 @@ class OcrActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ocr)
-
+        openWebButton = findViewById(R.id.openWebButton)
+        exchangeRatePerUnit = findViewById(R.id.exchangeRatePerUnit)
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         fromCurrencySpinner = findViewById(R.id.fromCurrencySpinner)
         toCurrencySpinner = findViewById(R.id.toCurrencySpinner)
@@ -99,7 +102,12 @@ class OcrActivity : AppCompatActivity() {
         btnSwap.setOnClickListener {
             swapCurrencies()
         }
-
+        openWebButton.setOnClickListener {
+            val url = "https://www.bot.or.th/en/statistics/exchange-rate.html"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)  // เปิดเบราว์เซอร์
+        }
 
 
         fromCurrencySpinner.setOnItemClickListener { _, _, position, _ ->
@@ -281,7 +289,7 @@ class OcrActivity : AppCompatActivity() {
             // ลบอักขระที่ไม่ใช่ตัวเลขและจุดทศนิยมออก
             val cleanedWord = word.replace(Regex("[^0-9.]"), "")
             // ตรวจสอบว่าคำที่ถูกลบอักขระแล้วเป็นตัวเลขที่ถูกต้องหรือไม่
-            if (cleanedWord.matches(Regex("^\\d+(\\.\\d+)?$")) && cleanedWord.length <= 6 && !cleanedWord.matches(Regex("\\d{1,2}/\\d{1,2}/\\d{2,4}"))) {
+            if (cleanedWord.matches(Regex("^\\d+(\\.\\d+)?$")) && cleanedWord.length <= 8 && !cleanedWord.matches(Regex("\\d{1,2}/\\d{1,2}/\\d{2,4}"))) {
                 result.add(cleanedWord)
             }
         }
@@ -308,7 +316,7 @@ class OcrActivity : AppCompatActivity() {
         val lastUpdated = sharedPreferences.getLong(KEY_LAST_UPDATED, 0)
         val currentTime = System.currentTimeMillis()
 
-        if (cachedCurrencies != null && currentTime - lastUpdated < 24 * 60 * 60 * 1000) {
+        if (cachedCurrencies != null && currentTime - lastUpdated < 15 * 60 * 1000) {
             Log.d("OcrActivity", "ใช้ข้อมูลในแคช")
             setupCurrencyAdapters(cachedCurrencies.toList())
 
@@ -346,15 +354,21 @@ class OcrActivity : AppCompatActivity() {
 
     private fun updateExchangeRateUI(rate: Double, currencyFrom: String, currencyTo: String) {
         val convertedAmount = ocrNumber * rate
-        val decimalFormat = DecimalFormat("#,###.##")
+        val decimalFormat = DecimalFormat("#,###.######") // ทศนิยม 6 ตำแหน่ง
 
         val formattedOcrNumber = decimalFormat.format(ocrNumber)
         val formattedConvertedAmount = decimalFormat.format(convertedAmount)
+        val formattedRatePerUnit = decimalFormat.format(rate)
 
         runOnUiThread {
+            // แสดงจำนวนเงินที่แปลงแล้ว
             ocrResult.text = "$formattedOcrNumber $currencyFrom = $formattedConvertedAmount $currencyTo"
+
+            // แสดงอัตราต่อ 1 หน่วย
+            exchangeRatePerUnit.text = "1 $currencyFrom = $formattedRatePerUnit $currencyTo"
         }
     }
+
     private fun saveExchangeRatesToCache(rates: Map<String, Double>) {
         val editor = sharedPreferences.edit()
         editor.putString(KEY_EXCHANGE_RATES, Gson().toJson(rates))
